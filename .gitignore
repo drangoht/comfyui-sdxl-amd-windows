@@ -1,0 +1,10 @@
+# Copie de test de l'installation (tests\tester-tout.ps1)
+.test/
+# Images produites par scripts\tester-installation.ps1
+sorties-test/
+# Modèles : jamais dans le dépôt
+*.safetensors
+*.pth
+*.ckpt
+*.part
+__pycache__/

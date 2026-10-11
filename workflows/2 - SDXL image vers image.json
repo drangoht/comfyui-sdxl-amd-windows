@@ -1,0 +1,970 @@
+{
+ "last_node_id": 30,
+ "last_link_id": 43,
+ "nodes": [
+  {
+   "id": 30,
+   "type": "MarkdownNote",
+   "pos": [
+    20,
+    20
+   ],
+   "size": [
+    440,
+    420
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "MarkdownNote"
+   },
+   "widgets_values": [
+    "**SDXL depuis une image (img2img)**\n\n1. *Image de départ* : cliquer sur **choose file to upload** (ou glisser une image sur le nœud).\n2. Le **prompt positif** décrit **toute l'image voulue** (pas seulement la modification), en anglais.\n3. Régler **denoise** dans le nœud *Transformation* :\n   - 0,2 – 0,35 : retouche légère (netteté, détails)\n   - 0,4 – 0,55 : même image, touche du nouveau style (l'original domine)\n   - **0,6 – 0,75 : vrai changement de style, pose et cadrage gardés** (défaut 0,65)\n   - 0,8 – 0,9 : réinterprétation libre, seules les grandes masses restent\n4. Ctrl+Entrée → `output\\SDXL_img2img_*.png` (≈ 1 mégapixel, proportions de l'image d'origine).\n\n**Upscale x2** : groupe bleu désactivé par défaut. Le sélectionner (clic sur son titre) → Ctrl+B pour l'activer.\n\nAstuce : seed en *fixed* puis faire varier seulement denoise pour comparer."
+   ],
+   "title": "Mode d'emploi"
+  },
+  {
+   "id": 10,
+   "type": "PrimitiveStringMultiline",
+   "pos": [
+    20,
+    480
+   ],
+   "size": [
+    440,
+    180
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      10
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveStringMultiline"
+   },
+   "widgets_values": [
+    "watercolor painting of a muscular man seen from behind standing in a neon-lit cyberpunk street at sunset, soft washes of pink and violet, visible paper texture, loose brush strokes"
+   ],
+   "title": "Prompt positif"
+  },
+  {
+   "id": 11,
+   "type": "PrimitiveStringMultiline",
+   "pos": [
+    20,
+    700
+   ],
+   "size": [
+    440,
+    140
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      11
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveStringMultiline"
+   },
+   "widgets_values": [
+    "blurry, low quality, deformed, watermark, text"
+   ],
+   "title": "Prompt négatif"
+  },
+  {
+   "id": 23,
+   "type": "LoadImage",
+   "pos": [
+    500,
+    20
+   ],
+   "size": [
+    340,
+    420
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      40
+     ]
+    },
+    {
+     "name": "MASK",
+     "type": "MASK",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoadImage"
+   },
+   "widgets_values": [
+    "test_img2img.png",
+    "image"
+   ],
+   "title": "Image de départ"
+  },
+  {
+   "id": 24,
+   "type": "ImageScaleToTotalPixels",
+   "pos": [
+    500,
+    480
+   ],
+   "size": [
+    340,
+    90
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 40
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      41
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ImageScaleToTotalPixels"
+   },
+   "widgets_values": [
+    "lanczos",
+    1.0
+   ],
+   "title": "Mise à l'échelle SDXL (1 Mpx)"
+  },
+  {
+   "id": 4,
+   "type": "CheckpointLoaderSimple",
+   "pos": [
+    880,
+    20
+   ],
+   "size": [
+    340,
+    100
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      1,
+      25
+     ]
+    },
+    {
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      3,
+      5
+     ]
+    },
+    {
+     "name": "VAE",
+     "type": "VAE",
+     "links": [
+      42,
+      8,
+      24,
+      30
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CheckpointLoaderSimple"
+   },
+   "widgets_values": [
+    "sd_xl_base_1.0.safetensors"
+   ],
+   "title": "Modèle de base"
+  },
+  {
+   "id": 25,
+   "type": "VAEEncode",
+   "pos": [
+    880,
+    170
+   ],
+   "size": [
+    210,
+    50
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 41
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 42
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      43
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEEncode"
+   },
+   "widgets_values": [],
+   "title": "Encodage de l'image"
+  },
+  {
+   "id": 6,
+   "type": "CLIPTextEncode",
+   "pos": [
+    880,
+    270
+   ],
+   "size": [
+    300,
+    60
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 3
+    },
+    {
+     "name": "text",
+     "type": "STRING",
+     "link": 10,
+     "widget": {
+      "name": "text"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      4,
+      26
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPTextEncode"
+   },
+   "widgets_values": [
+    ""
+   ],
+   "title": "Base : positif"
+  },
+  {
+   "id": 7,
+   "type": "CLIPTextEncode",
+   "pos": [
+    880,
+    370
+   ],
+   "size": [
+    300,
+    60
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 5
+    },
+    {
+     "name": "text",
+     "type": "STRING",
+     "link": 11,
+     "widget": {
+      "name": "text"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      6,
+      27
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPTextEncode"
+   },
+   "widgets_values": [
+    ""
+   ],
+   "title": "Base : négatif"
+  },
+  {
+   "id": 3,
+   "type": "KSampler",
+   "pos": [
+    1240,
+    20
+   ],
+   "size": [
+    330,
+    280
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 1
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 4
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 6
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 43
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      7
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    0,
+    "randomize",
+    30,
+    7,
+    "dpmpp_2m",
+    "karras",
+    0.65
+   ],
+   "title": "Transformation (denoise = force)",
+   "color": "#332922"
+  },
+  {
+   "id": 8,
+   "type": "VAEDecode",
+   "pos": [
+    1240,
+    340
+   ],
+   "size": [
+    210,
+    50
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 7
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 8
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      9,
+      21
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "widgets_values": [],
+   "title": "Décodage"
+  },
+  {
+   "id": 26,
+   "type": "SaveImage",
+   "pos": [
+    1600,
+    20
+   ],
+   "size": [
+    440,
+    460
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 9
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "SDXL_img2img"
+   ],
+   "title": "Résultat (~1 Mpx)"
+  },
+  {
+   "id": 16,
+   "type": "UpscaleModelLoader",
+   "pos": [
+    1240,
+    620
+   ],
+   "size": [
+    320,
+    60
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 4,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "UPSCALE_MODEL",
+     "type": "UPSCALE_MODEL",
+     "links": [
+      20
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "UpscaleModelLoader"
+   },
+   "widgets_values": [
+    "RealESRGAN_x2plus.pth"
+   ],
+   "title": "Modèle d'upscale (x2)"
+  },
+  {
+   "id": 17,
+   "type": "ImageUpscaleWithModel",
+   "pos": [
+    1600,
+    620
+   ],
+   "size": [
+    260,
+    50
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "upscale_model",
+     "type": "UPSCALE_MODEL",
+     "link": 20
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 21
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      23
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ImageUpscaleWithModel"
+   },
+   "widgets_values": [],
+   "title": "Upscale x2 (RealESRGAN)"
+  },
+  {
+   "id": 19,
+   "type": "VAEEncodeTiled",
+   "pos": [
+    1600,
+    840
+   ],
+   "size": [
+    260,
+    150
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 23
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 24
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      28
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEEncodeTiled"
+   },
+   "widgets_values": [
+    512,
+    64,
+    64,
+    8
+   ],
+   "title": "Encodage x2 (tuiles 512)"
+  },
+  {
+   "id": 20,
+   "type": "KSampler",
+   "pos": [
+    1900,
+    620
+   ],
+   "size": [
+    320,
+    270
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 25
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 26
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 27
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 28
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      29
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    0,
+    "randomize",
+    6,
+    7,
+    "dpmpp_2m",
+    "karras",
+    0.3
+   ],
+   "title": "Affinage x2 (6 pas, denoise 0,3)"
+  },
+  {
+   "id": 21,
+   "type": "VAEDecodeTiled",
+   "pos": [
+    1900,
+    930
+   ],
+   "size": [
+    260,
+    150
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 29
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 30
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      31
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecodeTiled"
+   },
+   "widgets_values": [
+    512,
+    64,
+    64,
+    8
+   ],
+   "title": "Décodage x2 (tuiles 512)"
+  },
+  {
+   "id": 9,
+   "type": "SaveImage",
+   "pos": [
+    2260,
+    620
+   ],
+   "size": [
+    520,
+    520
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 4,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 31
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "SDXL_img2img_x2"
+   ],
+   "title": "Image finale x2"
+  }
+ ],
+ "links": [
+  [
+   1,
+   4,
+   0,
+   3,
+   0,
+   "MODEL"
+  ],
+  [
+   3,
+   4,
+   1,
+   6,
+   0,
+   "CLIP"
+  ],
+  [
+   4,
+   6,
+   0,
+   3,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   5,
+   4,
+   1,
+   7,
+   0,
+   "CLIP"
+  ],
+  [
+   6,
+   7,
+   0,
+   3,
+   2,
+   "CONDITIONING"
+  ],
+  [
+   7,
+   3,
+   0,
+   8,
+   0,
+   "LATENT"
+  ],
+  [
+   8,
+   4,
+   2,
+   8,
+   1,
+   "VAE"
+  ],
+  [
+   9,
+   8,
+   0,
+   26,
+   0,
+   "IMAGE"
+  ],
+  [
+   10,
+   10,
+   0,
+   6,
+   1,
+   "STRING"
+  ],
+  [
+   11,
+   11,
+   0,
+   7,
+   1,
+   "STRING"
+  ],
+  [
+   20,
+   16,
+   0,
+   17,
+   0,
+   "UPSCALE_MODEL"
+  ],
+  [
+   21,
+   8,
+   0,
+   17,
+   1,
+   "IMAGE"
+  ],
+  [
+   24,
+   4,
+   2,
+   19,
+   1,
+   "VAE"
+  ],
+  [
+   25,
+   4,
+   0,
+   20,
+   0,
+   "MODEL"
+  ],
+  [
+   26,
+   6,
+   0,
+   20,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   27,
+   7,
+   0,
+   20,
+   2,
+   "CONDITIONING"
+  ],
+  [
+   28,
+   19,
+   0,
+   20,
+   3,
+   "LATENT"
+  ],
+  [
+   29,
+   20,
+   0,
+   21,
+   0,
+   "LATENT"
+  ],
+  [
+   30,
+   4,
+   2,
+   21,
+   1,
+   "VAE"
+  ],
+  [
+   31,
+   21,
+   0,
+   9,
+   0,
+   "IMAGE"
+  ],
+  [
+   40,
+   23,
+   0,
+   24,
+   0,
+   "IMAGE"
+  ],
+  [
+   41,
+   24,
+   0,
+   25,
+   0,
+   "IMAGE"
+  ],
+  [
+   42,
+   4,
+   2,
+   25,
+   1,
+   "VAE"
+  ],
+  [
+   43,
+   25,
+   0,
+   3,
+   3,
+   "LATENT"
+  ],
+  [
+   23,
+   17,
+   0,
+   19,
+   0,
+   "IMAGE"
+  ]
+ ],
+ "groups": [
+  {
+   "title": "Upscale x2 + affinage (Ctrl+B pour activer)",
+   "bounding": [
+    1220,
+    560,
+    1580,
+    600
+   ],
+   "color": "#3f789e",
+   "font_size": 24,
+   "flags": {}
+  }
+ ],
+ "config": {},
+ "extra": {
+  "ds": {
+   "scale": 0.55,
+   "offset": [
+    30,
+    30
+   ]
+  }
+ },
+ "version": 0.4
+}

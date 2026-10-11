@@ -1,0 +1,879 @@
+{
+ "last_node_id": 64,
+ "last_link_id": 22,
+ "nodes": [
+  {
+   "id": 50,
+   "type": "MarkdownNote",
+   "pos": [
+    20,
+    20
+   ],
+   "size": [
+    440,
+    520
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "MarkdownNote"
+   },
+   "widgets_values": [
+    "**SDXL guidé par les contours (ControlNet)**\n\nGarde la **composition exacte** d'une image (silhouettes, perspective, cadrage) et change tout le reste : sujet, décor, époque, style.\n\n1. *Image de départ* : charger l'image (photo, dessin, croquis…).\n2. **Prompt positif** : décrire la **nouvelle** image voulue, en anglais.\n3. Ctrl+Entrée → `output\\SDXL_controlnet_*.png`. Les contours détectés s'affichent dans *Contours (aperçu)*.\n\nRéglages :\n- **strength** (*Application ControlNet*, défaut 0,7) : fidélité aux contours. 0,4–0,6 = plus de liberté ; 0,8–1,0 = très strict.\n- **end_percent** (défaut 0,8) : le guidage s'arrête à 80 % des pas pour laisser le modèle finir les détails.\n- **denoise** (*Génération*, défaut 1,0) : 1,0 = seuls les contours comptent ; 0,75 = quelques touches de lumière/couleur d'origine ;\n  descendre vers 0,5–0,6 pour garder vraiment les couleurs (le prompt pèse alors moins).\n- **Seuils Canny** (*Détection des contours*) : baisser (0,2 / 0,5) pour plus de détails, monter (0,5 / 0,9) pour ne garder que les grandes lignes.\n- Croquis ou dessin au trait en entrée : marche aussi très bien."
+   ],
+   "title": "Mode d'emploi"
+  },
+  {
+   "id": 10,
+   "type": "PrimitiveStringMultiline",
+   "pos": [
+    20,
+    580
+   ],
+   "size": [
+    440,
+    180
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      1
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveStringMultiline"
+   },
+   "widgets_values": [
+    "a medieval knight in full plate armor seen from behind, standing in a snowy mountain village street at night, lanterns, falling snow, cinematic lighting, highly detailed digital painting"
+   ],
+   "title": "Prompt positif"
+  },
+  {
+   "id": 11,
+   "type": "PrimitiveStringMultiline",
+   "pos": [
+    20,
+    800
+   ],
+   "size": [
+    440,
+    140
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      2
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "PrimitiveStringMultiline"
+   },
+   "widgets_values": [
+    "blurry, low quality, deformed, watermark, text"
+   ],
+   "title": "Prompt négatif"
+  },
+  {
+   "id": 23,
+   "type": "LoadImage",
+   "pos": [
+    500,
+    20
+   ],
+   "size": [
+    360,
+    460
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      3
+     ]
+    },
+    {
+     "name": "MASK",
+     "type": "MASK",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoadImage"
+   },
+   "widgets_values": [
+    "test_img2img.png",
+    "image"
+   ],
+   "title": "Image de départ"
+  },
+  {
+   "id": 24,
+   "type": "ImageScaleToTotalPixels",
+   "pos": [
+    500,
+    530
+   ],
+   "size": [
+    320,
+    90
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 3
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      4,
+      14
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ImageScaleToTotalPixels"
+   },
+   "widgets_values": [
+    "lanczos",
+    1.0
+   ],
+   "title": "Image à 1 Mpx"
+  },
+  {
+   "id": 60,
+   "type": "Canny",
+   "pos": [
+    500,
+    660
+   ],
+   "size": [
+    320,
+    90
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 4
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      5,
+      12
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Canny"
+   },
+   "widgets_values": [
+    0.4,
+    0.8
+   ],
+   "title": "Détection des contours"
+  },
+  {
+   "id": 61,
+   "type": "PreviewImage",
+   "pos": [
+    500,
+    790
+   ],
+   "size": [
+    360,
+    360
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 5
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "PreviewImage"
+   },
+   "widgets_values": [],
+   "title": "Contours (aperçu)"
+  },
+  {
+   "id": 4,
+   "type": "CheckpointLoaderSimple",
+   "pos": [
+    900,
+    20
+   ],
+   "size": [
+    340,
+    100
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      16
+     ]
+    },
+    {
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      6,
+      7
+     ]
+    },
+    {
+     "name": "VAE",
+     "type": "VAE",
+     "links": [
+      13,
+      15,
+      21
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CheckpointLoaderSimple"
+   },
+   "widgets_values": [
+    "sd_xl_base_1.0.safetensors"
+   ],
+   "title": "Modèle de base"
+  },
+  {
+   "id": 62,
+   "type": "ControlNetLoader",
+   "pos": [
+    900,
+    170
+   ],
+   "size": [
+    340,
+    60
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "CONTROL_NET",
+     "type": "CONTROL_NET",
+     "links": [
+      8
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ControlNetLoader"
+   },
+   "widgets_values": [
+    "controlnet-union-sdxl-promax.safetensors"
+   ],
+   "title": "Modèle ControlNet (Union)"
+  },
+  {
+   "id": 63,
+   "type": "SetUnionControlNetType",
+   "pos": [
+    900,
+    270
+   ],
+   "size": [
+    340,
+    60
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "control_net",
+     "type": "CONTROL_NET",
+     "link": 8
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONTROL_NET",
+     "type": "CONTROL_NET",
+     "links": [
+      11
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "SetUnionControlNetType"
+   },
+   "widgets_values": [
+    "canny/lineart/anime_lineart/mlsd"
+   ],
+   "title": "Type : contours"
+  },
+  {
+   "id": 6,
+   "type": "CLIPTextEncode",
+   "pos": [
+    900,
+    370
+   ],
+   "size": [
+    300,
+    60
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 6
+    },
+    {
+     "name": "text",
+     "type": "STRING",
+     "link": 1,
+     "widget": {
+      "name": "text"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      9
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPTextEncode"
+   },
+   "widgets_values": [
+    ""
+   ],
+   "title": "Positif"
+  },
+  {
+   "id": 7,
+   "type": "CLIPTextEncode",
+   "pos": [
+    900,
+    470
+   ],
+   "size": [
+    300,
+    60
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 7
+    },
+    {
+     "name": "text",
+     "type": "STRING",
+     "link": 2,
+     "widget": {
+      "name": "text"
+     }
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      10
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPTextEncode"
+   },
+   "widgets_values": [
+    ""
+   ],
+   "title": "Négatif"
+  },
+  {
+   "id": 25,
+   "type": "VAEEncode",
+   "pos": [
+    900,
+    570
+   ],
+   "size": [
+    210,
+    50
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 14
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 15
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      19
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEEncode"
+   },
+   "widgets_values": [],
+   "title": "Encodage de l'image"
+  },
+  {
+   "id": 64,
+   "type": "ControlNetApplyAdvanced",
+   "pos": [
+    1280,
+    20
+   ],
+   "size": [
+    320,
+    190
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 9
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 10
+    },
+    {
+     "name": "control_net",
+     "type": "CONTROL_NET",
+     "link": 11
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 12
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 13
+    }
+   ],
+   "outputs": [
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "links": [
+      17
+     ]
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "links": [
+      18
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ControlNetApplyAdvanced"
+   },
+   "widgets_values": [
+    0.7,
+    0.0,
+    0.8
+   ],
+   "title": "Application ControlNet"
+  },
+  {
+   "id": 3,
+   "type": "KSampler",
+   "pos": [
+    1640,
+    20
+   ],
+   "size": [
+    330,
+    280
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 16
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 17
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 18
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 19
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      20
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    0,
+    "randomize",
+    30,
+    7,
+    "dpmpp_2m",
+    "karras",
+    1.0
+   ],
+   "title": "Génération (denoise)"
+  },
+  {
+   "id": 8,
+   "type": "VAEDecode",
+   "pos": [
+    1640,
+    340
+   ],
+   "size": [
+    210,
+    50
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 20
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 21
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      22
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "widgets_values": [],
+   "title": "Décodage"
+  },
+  {
+   "id": 26,
+   "type": "SaveImage",
+   "pos": [
+    2010,
+    20
+   ],
+   "size": [
+    480,
+    520
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 22
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "SDXL_controlnet"
+   ],
+   "title": "Résultat"
+  }
+ ],
+ "links": [
+  [
+   1,
+   10,
+   0,
+   6,
+   1,
+   "STRING"
+  ],
+  [
+   2,
+   11,
+   0,
+   7,
+   1,
+   "STRING"
+  ],
+  [
+   3,
+   23,
+   0,
+   24,
+   0,
+   "IMAGE"
+  ],
+  [
+   4,
+   24,
+   0,
+   60,
+   0,
+   "IMAGE"
+  ],
+  [
+   5,
+   60,
+   0,
+   61,
+   0,
+   "IMAGE"
+  ],
+  [
+   6,
+   4,
+   1,
+   6,
+   0,
+   "CLIP"
+  ],
+  [
+   7,
+   4,
+   1,
+   7,
+   0,
+   "CLIP"
+  ],
+  [
+   8,
+   62,
+   0,
+   63,
+   0,
+   "CONTROL_NET"
+  ],
+  [
+   9,
+   6,
+   0,
+   64,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   10,
+   7,
+   0,
+   64,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   11,
+   63,
+   0,
+   64,
+   2,
+   "CONTROL_NET"
+  ],
+  [
+   12,
+   60,
+   0,
+   64,
+   3,
+   "IMAGE"
+  ],
+  [
+   13,
+   4,
+   2,
+   64,
+   4,
+   "VAE"
+  ],
+  [
+   14,
+   24,
+   0,
+   25,
+   0,
+   "IMAGE"
+  ],
+  [
+   15,
+   4,
+   2,
+   25,
+   1,
+   "VAE"
+  ],
+  [
+   16,
+   4,
+   0,
+   3,
+   0,
+   "MODEL"
+  ],
+  [
+   17,
+   64,
+   0,
+   3,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   18,
+   64,
+   1,
+   3,
+   2,
+   "CONDITIONING"
+  ],
+  [
+   19,
+   25,
+   0,
+   3,
+   3,
+   "LATENT"
+  ],
+  [
+   20,
+   3,
+   0,
+   8,
+   0,
+   "LATENT"
+  ],
+  [
+   21,
+   4,
+   2,
+   8,
+   1,
+   "VAE"
+  ],
+  [
+   22,
+   8,
+   0,
+   26,
+   0,
+   "IMAGE"
+  ]
+ ],
+ "groups": [],
+ "config": {},
+ "extra": {
+  "ds": {
+   "scale": 0.55,
+   "offset": [
+    30,
+    30
+   ]
+  }
+ },
+ "version": 0.4
+}
